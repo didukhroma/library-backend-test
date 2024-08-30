@@ -1,0 +1,14 @@
+[
+  {
+    "isbn": "978-3-16-148410-0",
+    "title": "Harry Potter and the Philosopher's Stone",
+    "author": "J.K. Rowling",
+    "isBorrowed": false
+  },
+  {
+    "isbn": "978-1-56619-909-4",
+    "title": "The Hobbit",
+    "author": "J.R.R. Tolkien",
+    "isBorrowed": true
+  }
+]
