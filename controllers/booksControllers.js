@@ -10,9 +10,8 @@ const getBooks = async (req, res) => {
   });
 };
 
-export const addBook = async ({ body }, res) => {
-  console.log(body);
-  const book = await booksServices.addContact(body);
+const addBook = async ({ body }, res) => {
+  const book = await booksServices.addBook(body);
   if (!book) {
     throw HttpError(404, 'Book with this ISBN already added');
   }
@@ -22,11 +21,28 @@ export const addBook = async ({ body }, res) => {
   });
 };
 
-export const updateBook = (req, res) => {
-  res.json();
+const updateBook = async (req, res) => {
+  const { isbn } = req.params;
+  if (!Object.keys(req.body).length) {
+    throw HttpError(400, 'No fields to update');
+  }
+  const updatedBook = await booksServices.updateBook(isbn, req.body);
+  if (!updatedBook) {
+    throw HttpError(404);
+  }
+  res.json({ updatedBook });
 };
 
-export const deleteBook = async (req, res) => {
+const updateBookStatus = async (req, res) => {
+  const { isbn } = req.params;
+  const updatedBook = await booksServices.updateBook(isbn);
+  if (!updatedBook) {
+    throw HttpError(404);
+  }
+  res.json({ updatedBook });
+};
+
+const deleteBook = async (req, res) => {
   const { isbn } = req.params;
   const book = await booksServices.deleteBook(isbn);
   if (!book) {
@@ -41,4 +57,5 @@ export default {
   addBook: ctrlWrapper(addBook),
   updateBook: ctrlWrapper(updateBook),
   deleteBook: ctrlWrapper(deleteBook),
+  updateBookStatus: ctrlWrapper(updateBookStatus),
 };

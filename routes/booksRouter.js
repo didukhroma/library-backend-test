@@ -18,4 +18,6 @@ booksRouter.put('/:isbn', updateBookMiddleware, booksControllers.updateBook);
 
 booksRouter.delete('/:isbn', booksControllers.deleteBook);
 
+booksRouter.patch('/:isbn/borrow', booksControllers.updateBookStatus);
+
 export default booksRouter;

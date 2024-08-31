@@ -23,12 +23,13 @@ const updateFile = async data => {
 
 const findBooksAndBookIndex = async isbn => {
   const booksList = await listBooks();
+  if (!Object.keys(booksList).length) return null;
   const bookIndex = booksList.findIndex(book => book.isbn === isbn);
   if (!~bookIndex) return null;
   return { booksList, bookIndex };
 };
 
-const addContact = async data => {
+const addBook = async data => {
   const booksList = await listBooks();
   const bookIndex = booksList.findIndex(book => book.isbn === data.isbn);
   if (~bookIndex) return null;
@@ -48,10 +49,14 @@ const deleteBook = async isbn => {
   return book;
 };
 
-const updateBook = async (isbn, data) => {
+const updateBook = async (isbn, data = {}) => {
   const checkISBN = await findBooksAndBookIndex(isbn);
   if (!checkISBN) return null;
   const { booksList, bookIndex } = checkISBN;
+
+  if (!Object.keys(data).length) {
+    data.isBorrowed = !booksList[bookIndex].isBorrowed;
+  }
 
   booksList[bookIndex] = { ...booksList[bookIndex], ...data };
   await updateFile(booksList);
@@ -60,7 +65,7 @@ const updateBook = async (isbn, data) => {
 
 export default {
   listBooks,
-  addContact,
+  addBook,
   deleteBook,
   updateBook,
 };

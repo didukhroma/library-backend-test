@@ -29,7 +29,7 @@ describe('Book endpoints ', () => {
   //POST-SUCCESS
   test('POST / add new book - success', async () => {
     const newBook = {
-      isbn: '978-1',
+      isbn: '121-1',
       title: 'Book 1',
       author: 'Author 1',
     };
@@ -126,5 +126,125 @@ describe('Book endpoints ', () => {
     const { status, body } = res;
     expect(status).toBe(404);
     expect(body).toEqual({ message: 'Not Found' });
+  });
+
+  //PUT-SUCCESS
+  test('PUT / update book - empty fields', async () => {
+    const newBook = {
+      isbn: '122-1',
+      title: 'Book 1',
+      author: 'Author 1',
+    };
+    try {
+      await requestWithSupertest.post('/api/books').send(newBook);
+
+      const updatedFields = {
+        title: 'Book 2',
+      };
+
+      const updatedBook = { ...newBook, ...updatedFields };
+
+      const res = await requestWithSupertest
+        .put(`/api/books/${newBook.isbn}`)
+        .send(updatedFields);
+
+      const { status, body } = res;
+      expect(status).toBe(200);
+      expect(body).toHaveProperty('updatedBook');
+      expect(body.updatedBook).toHaveProperty('isbn');
+      expect(body.updatedBook.isbn).toEqual(updatedBook.isbn);
+      expect(body.updatedBook).toHaveProperty('title');
+      expect(body.updatedBook.title).toEqual(updatedBook.title);
+      expect(body.updatedBook.isBorrowed).toEqual(
+        updatedFields.isBorrowed || false,
+      );
+      expect(body.updatedBook).toHaveProperty('author');
+      expect(body.updatedBook.author).toEqual(updatedBook.author);
+    } finally {
+      // Clean up the database
+      await requestWithSupertest.delete(`/api/books/${newBook.isbn}`);
+    }
+  });
+
+  //PUT-BAD REQUEST-EMPTY FIELDS
+  test('PUT / update book - success', async () => {
+    const newBook = {
+      isbn: '122-1',
+      title: 'Book 1',
+      author: 'Author 1',
+    };
+    await requestWithSupertest.post('/api/books').send(newBook);
+
+    const updatedFields = {};
+
+    const res = await requestWithSupertest
+      .put(`/api/books/${newBook.isbn}`)
+      .send(updatedFields);
+
+    const { status, body } = res;
+    expect(status).toBe(400);
+    expect(body).toEqual({ message: 'No fields to update' });
+  });
+  //PUT-BAD REQUEST-WRONG ISBN
+  test('PUT / update book - wrong isbn', async () => {
+    const updatedFields = {
+      title: 'Book 1',
+      author: 'Author 1',
+    };
+
+    const res = await requestWithSupertest
+      .put(`/api/books/978-2-3`)
+      .send(updatedFields);
+
+    const { status, body } = res;
+    expect(status).toBe(404);
+    expect(body).toEqual({ message: 'Not Found' });
+  });
+
+  //PATCH-SUCCESS
+  test('Patch / update book status - success', async () => {
+    const newBook = {
+      isbn: '123-1',
+      title: 'Book 1',
+      author: 'Author 1',
+    };
+    try {
+      await requestWithSupertest.post('/api/books').send(newBook);
+
+      const res = await requestWithSupertest.patch(
+        `/api/books/${newBook.isbn}/borrow`,
+      );
+
+      const { status, body } = res;
+      expect(status).toBe(200);
+      expect(body).toHaveProperty('updatedBook');
+      expect(body.updatedBook).toHaveProperty('isbn');
+      expect(body.updatedBook).toHaveProperty('title');
+      expect(body.updatedBook).toHaveProperty('author');
+      expect(body.updatedBook).toHaveProperty('isBorrowed');
+    } finally {
+      await requestWithSupertest.delete(`/api/books/${newBook.isbn}`);
+    }
+  });
+  //PATCH-BAD REQUEST-WRONG ISBN
+  test('Patch / update book status - bad request - wrong isbn', async () => {
+    const newBook = {
+      isbn: '123-1',
+      title: 'Book 1',
+      author: 'Author 1',
+    };
+    try {
+      await requestWithSupertest.post('/api/books').send(newBook);
+
+      const res = await requestWithSupertest.patch(
+        `/api/books/1111-1111/borrow`,
+      );
+
+      const { status, body } = res;
+      expect(status).toBe(404);
+      expect(body).toEqual({ message: 'Not Found' });
+    } finally {
+      await requestWithSupertest.delete(`/api/books/${newBook.isbn}`);
+    }
   });
 });

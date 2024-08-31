@@ -13,7 +13,6 @@ export const createBookSchema = Joi.object({
 });
 
 export const updateBookSchema = Joi.object({
-  isbn: Joi.string().min(3),
   title: Joi.string().min(3),
   author: Joi.string().min(3),
   isBorrowed: Joi.boolean(),
