@@ -1,25 +1,21 @@
 import { Router } from 'express';
 
-import * as booksControllers from '../controllers/booksControllers.js';
+import booksControllers from '../controllers/booksControllers.js';
 
-// import validateBody from '../decorators/validateBody.js';
+import validateBody from '../decorators/validateBody.js';
+import { createBookSchema, updateBookSchema } from '../schemas/bookSchemas.js';
 
-// import {
-//   createContactSchema,
-//   updateContactSchema,
-// } from '../schemas/contactsSchemas.js';
-
-// const createContactMiddleware = validateBody(createContactSchema);
-// const updateContactMiddleware = validateBody(updateContactSchema);
+const createBookMiddleware = validateBody(createBookSchema);
+const updateBookMiddleware = validateBody(updateBookSchema);
 
 const booksRouter = Router();
 
 booksRouter.get('/', booksControllers.getBooks);
 
-booksRouter.post('/', booksControllers.addBook);
+booksRouter.post('/', createBookMiddleware, booksControllers.addBook);
 
-booksRouter.put('/:isbn', booksControllers.updateBook);
+booksRouter.put('/:isbn', updateBookMiddleware, booksControllers.updateBook);
 
-booksRouter.delete('/:isbn', booksControllers.updateBook);
+booksRouter.delete('/:isbn', booksControllers.deleteBook);
 
 export default booksRouter;
