@@ -26,6 +26,35 @@ describe('Book endpoints ', () => {
     expect(body.books).toBeInstanceOf(Array);
   });
 
+  //GET SUCCESS - TWO SEARCH QUERIES
+  test('GET / get all books - two search queries - success', async () => {
+    const query = { isbn: '978-1-56619-909-4', title: 'The Hobbit' };
+
+    const { status, type, body } = await requestWithSupertest.get(
+      `/api/books?isbn=${query.isbn}&title=${query.title}`,
+    );
+
+    expect(status).toBe(200);
+    expect(type).toBe('application/json');
+    expect(body).toHaveProperty('books');
+    expect(body.books).toBeInstanceOf(Array);
+  });
+
+  //GET SUCCESS - TWO SEARCH QUERIES  - NO RESULTS - WRONG ISBN
+  test('GET / get all books - two search queries - wrong isbn', async () => {
+    const query = { isbn: '978-1-56619-909-41', title: 'The Hobbit' };
+
+    const { status, type, body } = await requestWithSupertest.get(
+      `/api/books?isbn=${query.isbn}&title=${query.title}`,
+    );
+
+    expect(status).toBe(200);
+    expect(type).toBe('application/json');
+    expect(body).toHaveProperty('books');
+    expect(body.books).toBeInstanceOf(Array);
+    expect(body.books.length).toBe(0);
+  });
+
   //POST-SUCCESS
   test('POST / add new book - success', async () => {
     const newBook = {
@@ -131,7 +160,7 @@ describe('Book endpoints ', () => {
   //PUT-SUCCESS
   test('PUT / update book - empty fields', async () => {
     const newBook = {
-      isbn: '122-1',
+      isbn: '122-2',
       title: 'Book 1',
       author: 'Author 1',
     };
@@ -173,17 +202,22 @@ describe('Book endpoints ', () => {
       title: 'Book 1',
       author: 'Author 1',
     };
-    await requestWithSupertest.post('/api/books').send(newBook);
+    try {
+      await requestWithSupertest.post('/api/books').send(newBook);
 
-    const updatedFields = {};
+      const updatedFields = {};
 
-    const res = await requestWithSupertest
-      .put(`/api/books/${newBook.isbn}`)
-      .send(updatedFields);
+      const res = await requestWithSupertest
+        .put(`/api/books/${newBook.isbn}`)
+        .send(updatedFields);
 
-    const { status, body } = res;
-    expect(status).toBe(400);
-    expect(body).toEqual({ message: 'No fields to update' });
+      const { status, body } = res;
+      expect(status).toBe(400);
+      expect(body).toEqual({ message: 'No fields to update' });
+    } finally {
+      // Clean up the database
+      await requestWithSupertest.delete(`/api/books/${newBook.isbn}`);
+    }
   });
   //PUT-BAD REQUEST-WRONG ISBN
   test('PUT / update book - wrong isbn', async () => {

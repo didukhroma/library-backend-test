@@ -1,11 +1,17 @@
 import path from 'path';
 import fs from 'fs/promises';
+import { filterArrByFilters } from '../helpers/filterArrByFilters.js';
 
 const booksPath = path.resolve('db', 'books.json');
 
-const listBooks = async () => {
+const listBooks = async query => {
   try {
-    return JSON.parse(await fs.readFile(booksPath, 'utf8'));
+    const bookList = JSON.parse(await fs.readFile(booksPath, 'utf8'));
+
+    if (!bookList.length || !query) return bookList;
+
+    const filteredList = filterArrByFilters(bookList, query);
+    return filteredList;
   } catch (error) {
     error.message = 'Server error. Cannot read file';
     throw error;
@@ -23,7 +29,7 @@ const updateFile = async data => {
 
 const findBooksAndBookIndex = async isbn => {
   const booksList = await listBooks();
-  if (!Object.keys(booksList).length) return null;
+  if (!booksList.length) return null;
   const bookIndex = booksList.findIndex(book => book.isbn === isbn);
   if (!~bookIndex) return null;
   return { booksList, bookIndex };
@@ -31,6 +37,7 @@ const findBooksAndBookIndex = async isbn => {
 
 const addBook = async data => {
   const booksList = await listBooks();
+  console.log(booksList);
   const bookIndex = booksList.findIndex(book => book.isbn === data.isbn);
   if (~bookIndex) return null;
 

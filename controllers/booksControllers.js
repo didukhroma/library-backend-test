@@ -3,7 +3,7 @@ import HttpError from '../helpers/HttpError.js';
 import booksServices from '../services/booksService.js';
 
 const getBooks = async (req, res) => {
-  const books = await booksServices.listBooks();
+  const books = await booksServices.listBooks(req.query);
 
   res.json({
     books,

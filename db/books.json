@@ -10,11 +10,5 @@
     "title": "The Hobbit",
     "author": "J.R.R. Tolkien",
     "isBorrowed": true
-  },
-  {
-    "isBorrowed": false,
-    "isbn": "122-1",
-    "title": "Book 1",
-    "author": "Author 1"
   }
 ]
