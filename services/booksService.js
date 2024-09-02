@@ -8,9 +8,15 @@ const listBooks = async query => {
   try {
     const bookList = JSON.parse(await fs.readFile(booksPath, 'utf8'));
 
-    if (!bookList.length || !query) return bookList;
+    if (
+      !bookList.length ||
+      !query ||
+      !Object.keys(query).length ||
+      !query.query.length
+    )
+      return bookList;
 
-    const filteredList = filterArrByFilters(bookList, query);
+    const filteredList = filterArrByFilters(bookList, query.query);
     return filteredList;
   } catch (error) {
     error.message = 'Server error. Cannot read file';
