@@ -1,13 +1,13 @@
-export const filterArrByFilters = (array, filters) =>
+export const filterArrByFilters = (array, searchQuery) =>
   array.filter(element => {
-    let result = false;
-    for (let key of Object.keys(filters)) {
-      if (element[key] !== filters[key]) {
-        result = false;
-        break;
-      } else {
-        result = true;
+    for (let value in element) {
+      if (
+        element[value]
+          .toString()
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase())
+      ) {
+        return true;
       }
     }
-    return result;
   });

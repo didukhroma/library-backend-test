@@ -3,6 +3,14 @@ import HttpError from '../helpers/HttpError.js';
 import booksServices from '../services/booksService.js';
 
 const getBooks = async (req, res) => {
+  const books = await booksServices.listBooks();
+
+  res.json({
+    books,
+  });
+};
+
+const getBooksBySearch = async (req, res) => {
   const books = await booksServices.listBooks(req.query);
 
   res.json({
@@ -58,4 +66,5 @@ export default {
   updateBook: ctrlWrapper(updateBook),
   deleteBook: ctrlWrapper(deleteBook),
   updateBookStatus: ctrlWrapper(updateBookStatus),
+  getBooksBySearch: ctrlWrapper(getBooksBySearch),
 };

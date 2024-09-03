@@ -12,6 +12,8 @@ const booksRouter = Router();
 
 booksRouter.get('/', booksControllers.getBooks);
 
+booksRouter.get('/search', booksControllers.getBooksBySearch);
+
 booksRouter.post('/', createBookMiddleware, booksControllers.addBook);
 
 booksRouter.put('/:isbn', updateBookMiddleware, booksControllers.updateBook);

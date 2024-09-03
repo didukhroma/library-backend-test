@@ -27,11 +27,11 @@ describe('Book endpoints ', () => {
   });
 
   //GET SUCCESS - TWO SEARCH QUERIES
-  test('GET / get all books - two search queries - success', async () => {
-    const query = { isbn: '978-1-56619-909-4', title: 'The Hobbit' };
+  test('GET / get all books - with query - success', async () => {
+    const query = { isbn: '978-1-56619-909-4' };
 
     const { status, type, body } = await requestWithSupertest.get(
-      `/api/books?isbn=${query.isbn}&title=${query.title}`,
+      `/api/books/search?query=${query.isbn}`,
     );
 
     expect(status).toBe(200);
@@ -41,11 +41,11 @@ describe('Book endpoints ', () => {
   });
 
   //GET SUCCESS - TWO SEARCH QUERIES  - NO RESULTS - WRONG ISBN
-  test('GET / get all books - two search queries - wrong isbn', async () => {
-    const query = { isbn: '978-1-56619-909-41', title: 'The Hobbit' };
+  test('GET / get all books - with query - wrong query  ', async () => {
+    const query = { isbn: '978-1-56619-909-41' };
 
     const { status, type, body } = await requestWithSupertest.get(
-      `/api/books?isbn=${query.isbn}&title=${query.title}`,
+      `/api/books/search?query=${query.isbn}`,
     );
 
     expect(status).toBe(200);
