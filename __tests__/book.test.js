@@ -31,7 +31,7 @@ describe('Book endpoints ', () => {
     const query = { isbn: '978-1-56619-909-4' };
 
     const { status, type, body } = await requestWithSupertest.get(
-      `/api/books?query=${query.isbn}`,
+      `/api/books/search?query=${query.isbn}`,
     );
 
     expect(status).toBe(200);
@@ -45,7 +45,7 @@ describe('Book endpoints ', () => {
     const query = { isbn: '978-1-56619-909-41' };
 
     const { status, type, body } = await requestWithSupertest.get(
-      `/api/books?query=${query.isbn}`,
+      `/api/books/search?query=${query.isbn}`,
     );
 
     expect(status).toBe(200);
