@@ -43,7 +43,6 @@ const findBooksAndBookIndex = async isbn => {
 
 const addBook = async data => {
   const booksList = await listBooks();
-  console.log(booksList);
   const bookIndex = booksList.findIndex(book => book.isbn === data.isbn);
   if (~bookIndex) return null;
 
@@ -63,6 +62,7 @@ const deleteBook = async isbn => {
 };
 
 const updateBook = async (isbn, data = {}) => {
+  console.log(data);
   const checkISBN = await findBooksAndBookIndex(isbn);
   if (!checkISBN) return null;
   const { booksList, bookIndex } = checkISBN;

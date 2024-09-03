@@ -3,12 +3,18 @@
     "isbn": "978-3-16-148410-0",
     "title": "Harry Potter and the Philosopher's Stone",
     "author": "J.K. Rowling",
+    "isBorrowed": true
+  },
+  {
+    "isbn": "978-1-56619-909-41",
+    "title": "The Hobbit",
+    "author": "J.R.R. Tolkien",
     "isBorrowed": false
   },
   {
-    "isbn": "978-1-56619-909-4",
-    "title": "The Hobbit",
-    "author": "J.R.R. Tolkien",
-    "isBorrowed": true
+    "isBorrowed": true,
+    "title": "asdasd",
+    "author": "Author 5",
+    "isbn": "978-1-2-3-5"
   }
 ]
