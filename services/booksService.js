@@ -62,7 +62,6 @@ const deleteBook = async isbn => {
 };
 
 const updateBook = async (isbn, data = {}) => {
-  console.log(data);
   const checkISBN = await findBooksAndBookIndex(isbn);
   if (!checkISBN) return null;
   const { booksList, bookIndex } = checkISBN;
